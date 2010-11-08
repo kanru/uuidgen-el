@@ -35,6 +35,8 @@
 
 ;;; Code:
 
+(require 'sha1)
+
 (defvar uuid-unix-epoch-delta #x01b21dd213814000
   "The interval between the UUID epoch and the Unix epoch.
 That is the number of 100-nanoseconds between
@@ -42,6 +44,36 @@ That is the number of 100-nanoseconds between
 
 (defvar uuid-interface "eth0"
   "The default interface for time based UUID generation.")
+
+;; Predefined namespace IDs
+;; Ref: RFC4122 Appendix C
+
+(defvar uuid-ns-dns "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+  "For UUID name string which is a fully-qualified domain name.")
+
+(defvar uuid-ns-url "6ba7b811-9dad-11d1-80b4-00c04fd430c8"
+  "For UUID name string which is a URL.")
+
+(defvar uuid-ns-oid "6ba7b812-9dad-11d1-80b4-00c04fd430c8"
+  "For UUID name string which is an ISO OID.")
+
+(defvar uuid-ns-x500 "6ba7b814-9dad-11d1-80b4-00c04fd430c8"
+  "For UUID name string which is an X.500 DN (in DER or a text output format).")
+
+(defun uuid-string-to-octets (string &optional start)
+  "Convert UUID string to a list of integers.
+STRING should contain a UUID string, the 8-4-4-4-12 format is
+preferred.  If START is not nil, start search form START
+position."
+  (if (string-match "[0-9a-f]\\{2\\}" string start)
+      (cons (string-to-number (match-string 0 string) 16)
+            (uuid-string-to-octets string (match-end 0)))))
+
+(defun uuid-decode (id)
+  "Convert UUID string to binary representation.
+ID should contain a UUID string, the 8-4-4-4-12 format is
+preferred."
+  (eval (cons 'unibyte-string (uuid-string-to-octets id))))
 
 (defun uuid-current-unix-clock ()
   "Get the current Unix time as a 100-nanosecond intervals."
@@ -160,6 +192,38 @@ the node information.  Pre-defined ADDR-FUNCTION are
     (uuid-gen clock seq 4 'uuid-format-random-address)))
 
 (defalias 'uuid 'uuid-1)
+
+(defun uuid-from-hash (hash ver)
+  "Generate name based UUID form hash HASH and version VER."
+  (concat (substring hash 0 8)
+          "-"
+          (substring hash 8 12)
+          "-"
+          (number-to-string ver)
+          (substring hash 13 16)
+          "-"
+          (format "%04x"
+                  (logior #x8000 (logand #x3FFF
+                                      (string-to-number (substring hash 16 20) 16))))
+          "-"
+          (substring hash 20 32)
+          ))
+
+(defun uuid-3 (ns name)
+  "Generate name based UUID using MD5 hash algorithm, aka UUIDv3.
+NS should be a generated UUID or predefined namespaces,
+`uuid-ns-dns', `uuid-ns-url', `uuid-ns-oid', `uuid-ns-x500'.
+NAME is the node name string."
+  (let ((hash (md5 (concat (uuid-decode ns) name))))
+    (uuid-from-hash hash 3)))
+
+(defun uuid-5 (ns name)
+  "Generate name based UUID using SHA-1 hash algorithm, aka UUIDv5.
+NS should be a generated UUID or predefined namespaces,
+`uuid-ns-dns', `uuid-ns-url', `uuid-ns-oid', `uuid-ns-x500'.
+NAME is the node name string."
+  (let ((hash (sha1 (concat (uuid-decode ns) name))))
+    (uuid-from-hash hash 5)))
 
 (provide 'uuid)
 ;;; uuid.el ends here
