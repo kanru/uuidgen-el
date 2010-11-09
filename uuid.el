@@ -225,5 +225,9 @@ NAME is the node name string."
   (let ((hash (sha1 (concat (uuid-decode ns) name))))
     (uuid-from-hash hash 5)))
 
+(defun uuid-urn (uuid)
+  "Return the string representation of a UUID as a URN."
+  (concat "urn:uuid:" uuid))
+
 (provide 'uuid)
 ;;; uuid.el ends here
