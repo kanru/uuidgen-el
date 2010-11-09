@@ -43,6 +43,15 @@
 
 (require 'sha1)
 
+(defgroup uuid nil
+  "UUID generation.")
+
+(defcustom uuid-suppress-network-info-warnings nil
+  "Non-nil means suppress warning messages for missing\
+`network-interface-list' or `network-interface-info' support."
+  :type 'boolean
+  :group 'uuid)
+
 (defvar uuid-unix-epoch-delta #x01b21dd213814000
   "The interval between the UUID epoch and the Unix epoch.
 That is the number of 100-nanoseconds between
@@ -123,9 +132,16 @@ CLOCK should be a integer less than 60 bits."
 CLOCK should be a integer less than 60 bits."
   (format "%02x" (logior #x80 (logand #x3F (lsh clock -8)))))
 
-(defun uuid-get-random-address ()
+(defun uuid-random-address ()
   "Return a address formed by list of random numbers."
   (mapcar (lambda (n) (random 256)) (make-list 6 0)))
+
+(defun uuid-random-multicast-address ()
+  "Return a random multicast address."
+  (let ((addr (uuid-random-address)))
+    ;; Set multicast bit. RFC4122#4.1.6
+    (cons (logior #x10 (car addr))
+          (cdr addr))))
 
 (defun uuid-get-interface (interfaces &optional default)
   "Return the interface for UUID node information.
@@ -143,15 +159,48 @@ If DEFAULT is not nil, check whether interface DEFAULT exists first."
 The return value is a array consist of the address number.
 If there is no interface available then return a random
 multicast address list."
-  (let ((info (network-interface-info
-               (uuid-get-interface
-                (network-interface-list) uuid-interface))))
-    (if info
-        (cdr (nth 3 info))
-      (let ((addr (uuid-get-random-address)))
-        ;; Set multicast bit. RFC4122#4.1.6
-        (cons (logior #x10 (car addr))
-              (cdr addr))))))
+  ;; Some platform doesn't have network-interface-* so we have to
+  ;; check this.
+  (if (and (fboundp 'network-interface-list)
+           (fboundp 'network-interface-info))
+      (let ((info (network-interface-info
+                   (uuid-get-interface
+                    (network-interface-list) uuid-interface))))
+        (if (and info
+                 (nth 3 info))
+            (cdr (nth 3 info))
+          (progn
+            (or uuid-suppress-network-info-warnings
+                (display-warning
+                 '(uuid network-interface-info)
+                 "`network-interface-info' returned nil address.
+
+This means either your NIC has no MAC address or the
+`network-interface-info' implementation on your platform is buggy.
+
+Will use random multicast address instead. Although this is suggested
+by RFC4122, the result might not be desired.
+
+You can customize `uuid-suppress-network-info-warnings' to
+disable this warning or by adding the entry (uuid network-interface-info)
+to the user option `warning-suppress-types', which is defined in the
+`warnings' library.\n"))
+            (uuid-random-multicast-address))
+          ))
+    (progn
+      (or uuid-suppress-network-info-warnings
+          (display-warning
+           'uuid
+           "Missing `network-interface-info' or `network-interface-list' support.
+
+Use random multicast address instead. Although this is suggested
+by RFC4122, the result might not be desired.
+
+You can customize `uuid-suppress-network-info-warnings' to
+disable this warning or by adding the entry (uuid network-interface-info)
+to the user option `warning-suppress-types', which is defined in the
+`warnings' library.\n"))
+      (uuid-random-multicast-address))))
 
 (defun uuid-format-ieee-address ()
   "Format the IEEE address based node name of UUID."
