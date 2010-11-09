@@ -162,7 +162,7 @@ multicast address list."
                address "")
     ))
 
-(defun uuid-gen (clock seq ver addr-function)
+(defun uuid-from-time (clock seq ver addr-function)
   "Generate UUID based on various value.
 CLOCK should be a integer less than 60 bits.  SEQ should be a
 integer less than 14 bits.  VER is the UUID variant number.
@@ -183,13 +183,13 @@ the node information.  Pre-defined ADDR-FUNCTION are
   "Generate time based UUID, aka UUIDv1."
   (let ((clock (uuid-system-clock))
         (seq (random)))
-    (uuid-gen clock seq 1 'uuid-format-ieee-address)))
+    (uuid-from-time clock seq 1 'uuid-format-ieee-address)))
 
 (defun uuid-4 ()
   "Generate UUID form random numbers, aka UUIDv4."
   (let ((clock (random))
         (seq (random)))
-    (uuid-gen clock seq 4 'uuid-format-random-address)))
+    (uuid-from-time clock seq 4 'uuid-format-random-address)))
 
 (defalias 'uuid 'uuid-1)
 
