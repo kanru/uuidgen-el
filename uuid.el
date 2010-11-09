@@ -25,13 +25,14 @@
 ;;
 ;; This is a naive implementation of RFC4122 Universally Unique
 ;; IDentifier generation in elisp.  Currently implemented are UUID v1
-;; and v4 generation.  The resolution of the time based UUID is
+;; v3, v4 and v5 generation.  The resolution of the time based UUID is
 ;; microseconds, which is 10 times of the suggested 100-nanosecond
 ;; resolution, but should be enough for general usage.
 
 ;;; TODO:
 ;;
-;; * Implement version 3 and version 5 UUID generation.
+;; * Simplify implementation and interfaces.
+;; * Unpack time-based UUID.
 
 ;;; Code:
 
