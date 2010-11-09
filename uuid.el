@@ -217,7 +217,7 @@ the node information.  Pre-defined ADDR-FUNCTION are
 NS should be a generated UUID or predefined namespaces,
 `uuid-ns-dns', `uuid-ns-url', `uuid-ns-oid', `uuid-ns-x500'.
 NAME is the node name string."
-  (let ((hash (md5 (concat (uuid-decode ns) name))))
+  (let ((hash (md5 (concat (uuid-decode ns) (string-as-unibyte name)))))
     (uuid-from-hash hash 3)))
 
 (defun uuid-5 (ns name)
@@ -225,7 +225,7 @@ NAME is the node name string."
 NS should be a generated UUID or predefined namespaces,
 `uuid-ns-dns', `uuid-ns-url', `uuid-ns-oid', `uuid-ns-x500'.
 NAME is the node name string."
-  (let ((hash (sha1 (concat (uuid-decode ns) name))))
+  (let ((hash (sha1 (concat (uuid-decode ns) (string-as-unibyte name)))))
     (uuid-from-hash hash 5)))
 
 (defun uuid-urn (uuid)
