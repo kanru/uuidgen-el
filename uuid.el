@@ -4,6 +4,7 @@
 
 ;; Author: Kan-Ru Chen <koster@debian.org>
 ;; Created: 08 Nov 2010
+;; Version: 0.2
 ;; Keywords: extensions, lisp, tools
 
 ;; This file is NOT part of GNU Emacs.
