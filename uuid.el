@@ -169,16 +169,15 @@ integer less than 14 bits.  VER is the UUID variant number.
 Valid VER are 1, 3, 4, 5.  ADDR-FUNCTION is a function generating
 the node information.  Pre-defined ADDR-FUNCTION are
 `uuid-format-ieee-address' and `uuid-format-random-address'."
-  (concat (uuid-format-time-low clock)
-          "-"
-          (uuid-format-time-mid clock)
-          "-"
-          (uuid-format-time-hi-version clock ver)
-          "-"
-          (uuid-format-clock-seq-hi-reserved seq)
-          (uuid-format-clock-seq-low seq)
-          "-"
-          (funcall addr-function)))
+  (mapconcat 'identity
+             (list
+              (uuid-format-time-low clock)
+              (uuid-format-time-mid clock)
+              (uuid-format-time-hi-version clock ver)
+              (concat (uuid-format-clock-seq-hi-reserved seq)
+                      (uuid-format-clock-seq-low seq))
+              (funcall addr-function))
+             "-"))
 
 (defun uuid-1 ()
   "Generate time based UUID, aka UUIDv1."
@@ -196,19 +195,17 @@ the node information.  Pre-defined ADDR-FUNCTION are
 
 (defun uuid-from-hash (hash ver)
   "Generate name based UUID form hash HASH and version VER."
-  (concat (substring hash 0 8)
-          "-"
-          (substring hash 8 12)
-          "-"
-          (number-to-string ver)
-          (substring hash 13 16)
-          "-"
-          (format "%04x"
-                  (logior #x8000 (logand #x3FFF
-                                      (string-to-number (substring hash 16 20) 16))))
-          "-"
-          (substring hash 20 32)
-          ))
+  (mapconcat 'identity
+             (list
+              (substring hash 0 8)
+              (substring hash 8 12)
+              (concat (number-to-string ver)
+                      (substring hash 13 16))
+              (format "%04x"
+                      (logior #x8000 (logand #x3FFF
+                                             (string-to-number (substring hash 16 20) 16))))
+              (substring hash 20 32))
+             "-"))
 
 (defun uuid-3 (ns name)
   "Generate name based UUID using MD5 hash algorithm, aka UUIDv3.
