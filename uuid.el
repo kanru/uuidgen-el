@@ -57,8 +57,10 @@
 That is the number of 100-nanoseconds between
 1582-10-15 00:00:00 and 1970-01-01 00:00:00.")
 
-(defvar uuid-interface "eth0"
-  "The default interface for time based UUID generation.")
+(defcustom uuid-interface "eth0"
+  "The default interface for time based UUID generation."
+  :type 'string
+  :group 'uuid)
 
 ;; Predefined namespace IDs
 ;; Ref: RFC4122 Appendix C
