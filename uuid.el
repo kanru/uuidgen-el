@@ -41,6 +41,7 @@
 
 ;;; Code:
 
+(require 'calc-ext)
 (require 'sha1)
 
 (defgroup uuid nil
@@ -52,7 +53,7 @@
   :type 'boolean
   :group 'uuid)
 
-(defvar uuid-unix-epoch-delta #x01b21dd213814000
+(defvar uuid-unix-epoch-delta (math-read-radix "1b21dd213814000" 16)
   "The interval between the UUID epoch and the Unix epoch.
 That is the number of 100-nanoseconds between
 1582-10-15 00:00:00 and 1970-01-01 00:00:00.")
@@ -95,34 +96,37 @@ preferred."
 (defun uuid-current-unix-clock ()
   "Get the current Unix time as a 100-nanosecond intervals."
   (let* ((unix-time (current-time))
-         (high (first unix-time))
-         (low (second unix-time))
-         (micro (third unix-time)))
-    (+ (* 10000000 (+ (lsh high 16) low))
+         (high (nth 0 unix-time))
+         (low (nth 1 unix-time))
+         (micro (nth 2 unix-time)))
+    (math-add
+     (math-mul 10000000 (math-add (math-mul high #x10000) low))
        (* 10 micro))
     ))
 
 (defun uuid-system-clock ()
   "Get the 100-nanosecond intervals after UUID epoch."
-  (+ (uuid-current-unix-clock) uuid-unix-epoch-delta))
+  (math-add (uuid-current-unix-clock) uuid-unix-epoch-delta))
 
 (defun uuid-format-time-low (clock)
   "Format the time_low part of the UUID.
 CLOCK should be a integer less than 60 bits."
-  (format "%08x" (logand #xFFFFFFFF clock)))
+  (format "%08x" (math-clip clock 32)))
 
 (defun uuid-format-time-mid (clock)
   "Format the time_mid part of the UUID.
 CLOCK should be a integer less than 60 bits."
-  (format "%04x" (logand #xFFFF (lsh clock -32))))
+  (format "%04x" (math-clip
+                  (car (math-idivmod clock (math-power-of-2 32))) 16)))
 
 (defun uuid-format-time-hi-version (clock &optional ver)
   "Format the time_hi_and_version part of the UUID.
 CLOCK should be a integer less than 60 bits.
 VER is the UUID variant number.  Valid VER are 1, 3, 4, 5."
   (let ((version (or ver 1)))
-    (format "%04x" (logior (lsh (logand #xF version) 12)
-                           (logand #xFFF (lsh clock -48))))))
+    (format "%01x%03x" ver
+            (math-clip
+             (car (math-idivmod clock (math-power-of-2 48))) 12))))
 
 (defun uuid-format-clock-seq-low (clock)
   "Format the clock_seq_low part of the UUID.
