@@ -217,7 +217,7 @@ to the user option `warning-suppress-types', which is defined in the
 
 (defun uuid-format-random-address ()
   "Format the IEEE address based node name of UUID."
-  (let ((address (uuid-get-random-address)))
+  (let ((address (uuid-random-address)))
     (mapconcat (lambda (var) (format "%02x" var))
                address "")
     ))
