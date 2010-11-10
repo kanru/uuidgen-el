@@ -111,13 +111,15 @@ preferred."
 (defun uuid-format-time-low (clock)
   "Format the time_low part of the UUID.
 CLOCK should be a integer less than 60 bits."
-  (format "%08x" (math-clip clock 32)))
+  (format "%08x" (math-fixnum
+                  (math-clip clock 32))))
 
 (defun uuid-format-time-mid (clock)
   "Format the time_mid part of the UUID.
 CLOCK should be a integer less than 60 bits."
-  (format "%04x" (math-clip
-                  (car (math-idivmod clock (math-power-of-2 32))) 16)))
+  (format "%04x" (math-fixnum
+                  (math-clip
+                   (car (math-idivmod clock (math-power-of-2 32))) 16))))
 
 (defun uuid-format-time-hi-version (clock &optional ver)
   "Format the time_hi_and_version part of the UUID.
@@ -125,8 +127,9 @@ CLOCK should be a integer less than 60 bits.
 VER is the UUID variant number.  Valid VER are 1, 3, 4, 5."
   (let ((version (or ver 1)))
     (format "%01x%03x" ver
-            (math-clip
-             (car (math-idivmod clock (math-power-of-2 48))) 12))))
+            (math-fixnum
+             (math-clip
+              (car (math-idivmod clock (math-power-of-2 48))) 12)))))
 
 (defun uuid-format-clock-seq-low (clock)
   "Format the clock_seq_low part of the UUID.
