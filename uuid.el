@@ -91,7 +91,10 @@ position."
   "Convert UUID string to binary representation.
 ID should contain a UUID string, the 8-4-4-4-12 format is
 preferred."
-  (eval (cons 'unibyte-string (uuid-string-to-octets id))))
+  (eval (cons (if (fboundp 'unibyte-string)
+                  'unibyte-string
+                'string)
+              (uuid-string-to-octets id))))
 
 (defun uuid-current-unix-clock ()
   "Get the current Unix time as a 100-nanosecond intervals."
