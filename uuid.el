@@ -108,6 +108,10 @@ preferred."
   "Get the 100-nanosecond intervals after UUID epoch."
   (math-add (uuid-current-unix-clock) uuid-unix-epoch-delta))
 
+(defun uuid-random-clock ()
+  "Get a random generated 60 bit clock."
+  (calcFunc-random (math-power-of-2 60)))
+
 (defun uuid-format-time-low (clock)
   "Format the time_low part of the UUID.
 CLOCK should be a integer less than 60 bits."
@@ -250,7 +254,7 @@ the node information.  Pre-defined ADDR-FUNCTION are
 
 (defun uuid-4 ()
   "Generate UUID form random numbers, aka UUIDv4."
-  (let ((clock (random))
+  (let ((clock (uuid-random-clock))
         (seq (random)))
     (uuid-from-time clock seq 4 'uuid-format-random-address)))
 
