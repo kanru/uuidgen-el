@@ -104,8 +104,7 @@ preferred."
          (micro (nth 2 unix-time)))
     (math-add
      (math-mul 10000000 (math-add (math-mul high #x10000) low))
-       (* 10 micro))
-    ))
+       (* 10 micro))))
 
 (defun uuid-system-clock ()
   "Get the 100-nanosecond intervals after UUID epoch."
@@ -201,8 +200,7 @@ You can customize `uuid-suppress-network-info-warnings' to
 disable this warning or by adding the entry (uuid network-interface-info)
 to the user option `warning-suppress-types', which is defined in the
 `warnings' library.\n"))
-            (uuid-random-multicast-address))
-          ))
+            (uuid-random-multicast-address))))
     (progn
       (or uuid-suppress-network-info-warnings
           (display-warning
@@ -222,15 +220,13 @@ to the user option `warning-suppress-types', which is defined in the
   "Format the IEEE address based node name of UUID."
   (let ((address (uuid-get-ieee-address)))
     (mapconcat (lambda (var) (format "%02x" var))
-               address "")
-    ))
+               address "")))
 
 (defun uuid-format-random-address ()
   "Format the IEEE address based node name of UUID."
   (let ((address (uuid-random-address)))
     (mapconcat (lambda (var) (format "%02x" var))
-               address "")
-    ))
+               address "")))
 
 (defun uuid-from-time (clock seq ver addr-function)
   "Generate UUID based on various value.
