@@ -292,6 +292,7 @@ NAME is the node name string."
   (concat "urn:uuid:" uuid))
 
 (defun uuid ()
+  "Insert UUID-1 at point"
   (interactive)
   (insert (uuid-1)))
 
