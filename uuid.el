@@ -257,8 +257,6 @@ the node information.  Pre-defined ADDR-FUNCTION are
         (seq (random)))
     (uuid--from-time clock seq 4 'uuid--format-random-address)))
 
-(defalias 'uuid 'uuid-1)
-
 (defun uuid-from-hash (hash ver)
   "Generate name based UUID form hash HASH and version VER."
   (mapconcat 'identity
@@ -292,6 +290,11 @@ NAME is the node name string."
 (defun uuid-urn (uuid)
   "Return the string representation of a UUID as a URN."
   (concat "urn:uuid:" uuid))
+
+(defun uuid ()
+  "Insert UUID-1 at point"
+  (interactive)
+  (insert (uuid-1)))
 
 (provide 'uuid)
 ;;; uuid.el ends here
