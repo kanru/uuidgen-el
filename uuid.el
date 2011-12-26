@@ -291,10 +291,12 @@ NAME is the node name string."
   "Return the string representation of a UUID as a URN."
   (concat "urn:uuid:" uuid))
 
-(defun uuid ()
-  "Insert UUID-1 at point"
-  (interactive)
-  (insert (uuid-1)))
+(defun uuid (random)
+  "Insert UUID-1 at point. If RANDOM is non-nil, insert UUID-4 instead."
+  (interactive "P")
+  (if random
+      (insert (uuid-4))
+    (insert (uuid-1))))
 
 (provide 'uuid)
 ;;; uuid.el ends here
