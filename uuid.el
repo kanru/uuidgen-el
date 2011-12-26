@@ -36,6 +36,7 @@
 
 ;;; TODO:
 ;;
+;; * Interactive command.
 ;; * Simplify implementation and interfaces.
 ;; * Unpack time-based UUID.
 
@@ -299,10 +300,18 @@ NAME is the node name string."
 
 (defun uuid-cid (&optional uuid)
   "Return UUID string in CID format that is suitable for COM definition.
-If UUID is nil will generate UUID-4 automatically."
+If UUID is nil will generate UUID-4 automatically.
+You customize `uuid-cid-format-string' to change the default format."
   (let ((raw (uuid--string-to-octets (or uuid
                                          (uuid-4)))))
     (apply 'format uuid-cid-format-string raw)))
+
+(defun insert-uuid-cid (uuid)
+  "Insert UUID string in CID format that is suitable for COM definition.
+If UUID is nil will generate UUID-4 automatically.
+You customize `uuid-cid-format-string' to change the default format."
+  (interactive (list (read-string "UUID: " (uuid-4))))
+  (insert (uuid-cid uuid)))
 
 (defun uuid (random)
   "Insert UUID-1 at point. If RANDOM is non-nil, insert UUID-4 instead."
