@@ -53,6 +53,12 @@
   :type 'boolean
   :group 'uuid)
 
+(defcustom uuid-cid-format-string
+  "{ 0x%02x%02x%02x%02x, 0x%02x%02x, 0x%02x%02x, { 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x, 0x%02x } }"
+  "Format string used to output CID string."
+  :type 'string
+  :group 'uuid)
+
 (defvar uuid-unix-epoch-delta (math-read-radix "1b21dd213814000" 16)
   "The interval between the UUID epoch and the Unix epoch.
 That is the number of 100-nanoseconds between
@@ -290,6 +296,13 @@ NAME is the node name string."
 (defun uuid-urn (uuid)
   "Return the string representation of a UUID as a URN."
   (concat "urn:uuid:" uuid))
+
+(defun uuid-cid (&optional uuid)
+  "Return UUID string in CID format that is suitable for COM definition.
+If UUID is nil will generate UUID-4 automatically."
+  (let ((raw (uuid--string-to-octets (or uuid
+                                         (uuid-4)))))
+    (apply 'format uuid-cid-format-string raw)))
 
 (defun uuid (random)
   "Insert UUID-1 at point. If RANDOM is non-nil, insert UUID-4 instead."
