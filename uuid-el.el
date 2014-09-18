@@ -45,7 +45,9 @@
 (require 'sha1)
 
 (defgroup uuid nil
-  "UUID generation.")
+  "UUID generation."
+  :group 'extensions
+  :group 'tools)
 
 (defcustom uuid-suppress-network-info-warnings nil
   "Non-nil means suppress warning messages for missing\
