@@ -1,6 +1,6 @@
 ;;; uuid.el --- Provides uuid generating functions
 
-;; Copyright (C) 2010, 2011 Kan-Ru Chen
+;; Copyright (C) 2010, 2011, 2014 Kan-Ru Chen
 
 ;; Author: Kan-Ru Chen <koster@debian.org>
 ;; Created: 08 Nov 2010
@@ -320,5 +320,5 @@ You customize `uuid-cid-format-string' to change the default format."
       (insert (uuid-4))
     (insert (uuid-1))))
 
-(provide 'uuid)
+(provide 'uuid-el)
 ;;; uuid.el ends here

@@ -12,22 +12,22 @@ APIs
 
 * Function uuid-1
 
-  Generate time based UUID, aka UUIDv1.
+  Generate time based UUID string, aka UUIDv1.
 
 * Function uuid-4
 
-  Generate UUID form random numbers, aka UUIDv4.
+  Generate UUID string form random numbers, aka UUIDv4.
 
 * Function uuid-3 (ns name)
 
-  Generate name based UUID using MD5 hash algorithm, aka UUIDv3.  NS
+  Generate name based UUID string using MD5 hash algorithm, aka UUIDv3.  NS
   should be a generated UUID or predefined namespaces, `uuid-ns-dns',
   `uuid-ns-url', `uuid-ns-oid', `uuid-ns-x500'.  NAME is the node name
   string.
 
 * Function uuid-5 (ns name)
 
-  Generate name based UUID using SHA-1 hash algorithm, aka UUIDv5.  NS
+  Generate name based UUID string using SHA-1 hash algorithm, aka UUIDv5.  NS
   should be a generated UUID or predefined namespaces, `uuid-ns-dns',
   `uuid-ns-url', `uuid-ns-oid', `uuid-ns-x500'.  NAME is the node name
   string.
