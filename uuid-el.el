@@ -1,4 +1,4 @@
-;;; uuid-el.el --- Provides uuid generating functions
+;;; uuid-el.el --- Provides various UUID generating functions
 
 ;; Copyright (C) 2010, 2011, 2014 Kan-Ru Chen
 
@@ -36,7 +36,6 @@
 
 ;;; TODO:
 ;;
-;; * Interactive command.
 ;; * Simplify implementation and interfaces.
 ;; * Unpack time-based UUID.
 
@@ -306,6 +305,7 @@ You customize `uuid-cid-format-string' to change the default format."
                                          (uuid-4)))))
     (apply 'format uuid-cid-format-string raw)))
 
+;;;###autoload
 (defun insert-uuid-cid (uuid)
   "Insert UUID string in CID format that is suitable for COM definition.
 If UUID is nil will generate UUID-4 automatically.
@@ -313,12 +313,13 @@ You customize `uuid-cid-format-string' to change the default format."
   (interactive (list (read-string "UUID: " (uuid-4))))
   (insert (uuid-cid uuid)))
 
-(defun uuid (random)
-  "Insert UUID-1 at point. If RANDOM is non-nil, insert UUID-4 instead."
+;;;###autoload
+(defun uuid (time-based)
+  "Insert UUID-4 at point. If TIME-BASED is non-nil, insert UUID-1 instead."
   (interactive "P")
-  (if random
-      (insert (uuid-4))
-    (insert (uuid-1))))
+  (if time-based
+      (insert (uuid-1))
+    (insert (uuid-4))))
 
 (provide 'uuid-el)
 ;;; uuid-el.el ends here
