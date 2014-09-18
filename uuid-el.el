@@ -1,4 +1,4 @@
-;;; uuid.el --- Provides uuid generating functions
+;;; uuid-el.el --- Provides uuid generating functions
 
 ;; Copyright (C) 2010, 2011, 2014 Kan-Ru Chen
 
@@ -321,4 +321,4 @@ You customize `uuid-cid-format-string' to change the default format."
     (insert (uuid-1))))
 
 (provide 'uuid-el)
-;;; uuid.el ends here
+;;; uuid-el.el ends here
