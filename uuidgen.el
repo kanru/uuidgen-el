@@ -1,8 +1,8 @@
 ;;; uuidgen.el --- Provides various UUID generating functions
 
-;; Copyright (C) 2010, 2011, 2014 Kan-Ru Chen
+;; Copyright (C) 2010, 2011, 2014, 2020 Kan-Ru Chen
 
-;; Author: Kan-Ru Chen <koster@debian.org>
+;; Author: Kan-Ru Chen <kanru@kanru.info>
 ;; Created: 08 Nov 2010
 ;; Version: 0.3
 ;; Keywords: extensions, lisp, tools
