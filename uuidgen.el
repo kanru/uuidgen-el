@@ -4,7 +4,7 @@
 
 ;; Author: Kan-Ru Chen <kanru@kanru.info>
 ;; Created: 08 Nov 2010
-;; Version: 0.3
+;; Version: 1.0
 ;; Keywords: extensions, lisp, tools
 
 ;; This file is NOT part of GNU Emacs.
@@ -100,19 +100,31 @@ position."
 ID should contain a UUID string, the 8-4-4-4-12 format is
 preferred."
   (apply (if (fboundp 'unibyte-string)
-            'unibyte-string
-          'string)
-        (uuidgen--string-to-octets id)))
+             'unibyte-string
+           'string)
+         (uuidgen--string-to-octets id)))
+
+(defun uuidgen--fixnum (bignum)
+  "Compatibility layer to convert a bignum to fixnum.
+Emacs supports native bignum starting from version 27. For older
+version will use calc for bignum calculation."
+  (if (integerp bignum)
+      bignum
+    (if (fboundp 'math-fixnum)
+        (math-fixnum bignum)
+      (error "%s is not a supported number format" bignum))))
 
 (defun uuidgen--current-unix-clock ()
   "Get the current Unix time as a 100-nanosecond intervals."
-  (let* ((unix-time (current-time))
-         (high (nth 0 unix-time))
-         (low (nth 1 unix-time))
-         (micro (nth 2 unix-time)))
-    (math-add
-     (math-mul 10000000 (math-add (math-mul high #x10000) low))
-       (* 10 micro))))
+  (if (fboundp 'time-convert)
+      (car (time-convert (current-time) 10000000))
+    (let* ((unix-time (current-time))
+           (high (nth 0 unix-time))
+           (low (nth 1 unix-time))
+           (micro (nth 2 unix-time)))
+      (math-add
+       (math-mul 10000000 (math-add (math-mul high #x10000) low))
+       (* 10 micro)))))
 
 (defun uuidgen--system-clock ()
   "Get the 100-nanosecond intervals after UUID epoch."
@@ -125,25 +137,26 @@ preferred."
 (defun uuidgen--format-time-low (clock)
   "Format the time_low part of the UUID.
 CLOCK should be a integer less than 60 bits."
-  (format "%08x" (math-fixnum
-                  (math-clip clock 32))))
+  (let ((time-low (uuidgen--fixnum (math-clip clock 32))))
+    (format "%08x" time-low)))
 
 (defun uuidgen--format-time-mid (clock)
   "Format the time_mid part of the UUID.
 CLOCK should be a integer less than 60 bits."
-  (format "%04x" (math-fixnum
-                  (math-clip
-                   (car (math-idivmod clock (math-power-of-2 32))) 16))))
+  (let ((time-mid (uuidgen--fixnum
+                   (math-clip
+                    (car (math-idivmod clock (math-power-of-2 32))) 16))))
+    (format "%04x" time-mid)))
 
 (defun uuidgen--format-time-hi-version (clock &optional ver)
   "Format the time_hi_and_version part of the UUID.
 CLOCK should be a integer less than 60 bits.
 VER is the UUID variant number.  Valid VER are 1, 3, 4, 5."
-  (let ((version (or ver 1)))
-    (format "%01x%03x" ver
-            (math-fixnum
-             (math-clip
-              (car (math-idivmod clock (math-power-of-2 48))) 12)))))
+  (let ((version (or ver 1))
+        (time-hi (uuidgen--fixnum
+                  (math-clip
+                   (car (math-idivmod clock (math-power-of-2 48))) 12))))
+    (format "%01x%03x" ver time-hi)))
 
 (defun uuidgen--format-clock-seq-low (clock)
   "Format the clock_seq_low part of the UUID.
