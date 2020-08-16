@@ -4,7 +4,7 @@
 
 ;; Author: Kan-Ru Chen <kanru@kanru.info>
 ;; Created: 08 Nov 2010
-;; Version: 1.1
+;; Version: 1.2
 ;; Keywords: extensions, lisp, tools
 
 ;; This file is NOT part of GNU Emacs.
@@ -302,7 +302,7 @@ the node information.  Pre-defined ADDR-FUNCTION are
 NS should be a generated UUID or predefined namespaces,
 `uuidgen-ns-dns', `uuidgen-ns-url', `uuidgen-ns-oid', `uuidgen-ns-x500'.
 NAME is the node name string."
-  (let ((hash (md5 (concat (uuidgen--decode ns) (string-as-unibyte name)))))
+  (let ((hash (md5 (concat (uuidgen--decode ns) (encode-coding-string name 'utf-8 t)))))
     (uuidgen-from-hash hash 3)))
 
 (defun uuidgen-5 (ns name)
@@ -310,7 +310,7 @@ NAME is the node name string."
 NS should be a generated UUID or predefined namespaces,
 `uuidgen-ns-dns', `uuidgen-ns-url', `uuidgen-ns-oid', `uuidgen-ns-x500'.
 NAME is the node name string."
-  (let ((hash (sha1 (concat (uuidgen--decode ns) (string-as-unibyte name)))))
+  (let ((hash (sha1 (concat (uuidgen--decode ns) (encode-coding-string name 'utf-8 t)))))
     (uuidgen-from-hash hash 5)))
 
 (defun uuidgen-urn (uuid)
