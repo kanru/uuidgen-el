@@ -1,3 +1,5 @@
+[![MELPA](https://melpa.org/packages/uuidgen-badge.svg)](https://melpa.org/#/uuidgen)
+
 uuidgen-el
 ==========
 
