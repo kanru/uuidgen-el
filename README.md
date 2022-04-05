@@ -24,14 +24,14 @@ APIs
 
   Generate name based UUID string using MD5 hash algorithm, aka
   UUIDv3.  NS should be a generated UUID or predefined namespaces,
-  `uuidgen-ns-dns', `uuidgen-ns-url', `uuidgen-ns-oid', `uuidgen-ns-x500'.  NAME
+  `uuidgen-ns-dns`, `uuidgen-ns-url`, `uuidgen-ns-oid`, `uuidgen-ns-x500`.  NAME
   is the node name string.
 
 * **Function** `uuidgen-5 (ns name)`
 
   Generate name based UUID string using SHA-1 hash algorithm, aka
   UUIDv5.  NS should be a generated UUID or predefined namespaces,
-  `uuidgen-ns-dns', `uuidgen-ns-url', `uuidgen-ns-oid', `uuidgen-ns-x500'.  NAME
+  `uuidgen-ns-dns`, `uuidgen-ns-url`, `uuidgen-ns-oid`, `uuidgen-ns-x500`.  NAME
   is the node name string.
 
 * **Function** `uuidgen-urn (uuid)`
@@ -42,13 +42,13 @@ APIs
 
   Return UUID string in CID format that is suitable for COM definition.
   If UUID is nil will generate UUID-4 automatically.
-  You customize `uuidgen-cid-format-string' to change the default format.
+  You customize `uuidgen-cid-format-string` to change the default format.
 
 * **Command** `insert-uuid-cid (uuid)`
 
   Insert UUID string in CID format that is suitable for COM definition.
   If UUID is nil will generate UUIDv4 automatically.
-  You customize `uuidgen-cid-format-string' to change the default format.
+  You customize `uuidgen-cid-format-string` to change the default format.
 
 * **Command** `uuidgen (time-based)`
 
