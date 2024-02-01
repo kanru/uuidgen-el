@@ -1,4 +1,4 @@
-;;; uuidgen.el --- Provides various UUID generating functions
+;;; uuidgen.el --- Provides various UUID generating functions -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2010, 2011, 2014, 2020, 2022 Kan-Ru Chen
 
