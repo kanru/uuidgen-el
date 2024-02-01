@@ -4,7 +4,7 @@
 
 ;; Author: Kan-Ru Chen <kanru@kanru.info>
 ;; Created: 08 Nov 2010
-;; Version: 1.2
+;; Version: 1.3
 ;; Keywords: extensions, lisp, tools
 
 ;; This file is NOT part of GNU Emacs.
